@@ -1,0 +1,264 @@
+﻿<!--
+    /*  Copyright (C) 2015  M. Ali & M. Shoaib
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+    -->
+    
+<Window x:Class="GUI_Experiment.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:scintilla="clr-namespace:ScintillaNET;assembly=ScintillaNET"
+        xmlns:self="clr-namespace:GUI_Experiment;assembly=Gui_Experiment"
+        Title="SrcME 0.9.0 (Source code Metrics Extraction)" Height="500" Width="800" Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen">
+    <Window.CommandBindings>
+        <CommandBinding Command="self:CustomCommands.OpenFile" Executed="OpenFileCommand_Executed" />
+        <CommandBinding Command="self:CustomCommands.OpenFolder" Executed="OpenFolder_Executed" />
+        <CommandBinding Command="self:CustomCommands.ProcessFolder" Executed="ProcessFolder_Executed" />
+        <CommandBinding Command="self:CustomCommands.Exit" Executed="ExitCommand_Executed" />
+        <CommandBinding Command="self:CustomCommands.About" Executed="AboutCommand_Executed" />
+    </Window.CommandBindings>
+    
+    <DockPanel Background="Black" LastChildFill="True">
+        <Menu Width="Auto" Height="22" DockPanel.Dock="Top">
+
+            <!-- File Menu -->
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open File" Name="openFile" Command="self:CustomCommands.OpenFile" />
+                <MenuItem Header="Open _Folder" Command="self:CustomCommands.OpenFolder" />
+                <MenuItem Header="_Process Folder" Command="self:CustomCommands.ProcessFolder" />
+                <Separator />
+                <MenuItem Header="Exi_t" Command="self:CustomCommands.Exit" />
+            </MenuItem>
+            <MenuItem Header="_View">
+
+            </MenuItem>
+            <MenuItem Header="_Tools">
+
+            </MenuItem>
+            <MenuItem Header="_Weka">
+
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Command="self:CustomCommands.About" />
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Top" Width="auto" Height="32" Background="White">
+            <ToolBar>
+                <Button ToolTip="Select File" Command="self:CustomCommands.OpenFile">
+                    <Image Source="/Icons/OpenFile.ico" />
+                </Button>
+                <Button ToolTip="Select Folder" Command="self:CustomCommands.OpenFolder">
+                    <Image Source="/Icons/OpenFolder.ico" />
+                </Button>
+                <Button Command="self:CustomCommands.ProcessFolder">
+                    <Image Source="/Icons/folderProcess.ico" />
+                </Button>
+                <Button ToolTip="View Statistics" Click="Button_Click">
+                    <Image Source="/Icons/Statistics.ico" />
+                </Button>
+                
+                <Button Command="self:CustomCommands.About">
+                    <Image Source="/Icons/Help.ico"  />
+                </Button>
+                
+            </ToolBar>
+        </Grid>
+        <StatusBar DockPanel.Dock="Bottom" >
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <TextBlock Name="statusBarTotalLines" Text="Lines:" />
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+                <TextBlock Text="Words: " Name="statusBarTotalWords" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+                <TextBlock Name="statusBarStatusMsg" Text="Status: " />
+            </StatusBarItem>
+            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="6">
+                <TextBlock Name="statusBarTime" Width="auto" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <Grid>
+                    <ProgressBar Width="120" Height="16" Background="White" Name="mainProgressBar" />
+                    <TextBlock Text="{Binding ElementName=mainProgressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
+            </StatusBarItem>
+        </StatusBar>
+        <DockPanel DockPanel.Dock="left" Background="White" Margin="1" Width="210">
+            <Grid DockPanel.Dock="Bottom" Background="White" Height="100">
+                
+            </Grid>
+            <GroupBox Header="Browse Folder" BorderThickness="2">
+                <TreeView Name="treev" BorderThickness="0" SelectedItemChanged="treev_SelectedItemChanged" />
+            </GroupBox>
+        </DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Background="WhiteSmoke" Margin="0,1,1,1" Grid.Row="0">
+                <GroupBox Header="Details" BorderThickness="2">
+                    <TabControl TabStripPlacement="Bottom">
+                        <TabItem Header="File Statistics" Background="Transparent">
+                            <ScrollViewer>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="SLOC-P" FontFamily="Courier New" FontSize="13" Margin="5,5,0,5" />
+                                        <TextBlock Text="SLOC-L" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Statements" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="i_Iterator" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Tabs" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="W/Non-W" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Chars" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Comments" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="AvgLineLen(chars)" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Uppercase %" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <Border Margin="0,3,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="ploc" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="loc" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="statemen" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="iteratI" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="Tabs" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="whiteRatio" Background="#f1eded" />
+                                        </Border>
+
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="ch" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="cmnts" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="avgll" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="uppercasePercnt" Background="#f1eded" />
+                                        </Border>
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Space" FontFamily="Courier New" FontSize="13" Margin="5,5,0,5" />
+                                        <TextBlock Text="EL/NEL" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Words" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="AvgLineLen(words)" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="AvgWordLen(chars)" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Comments/SLOC-L" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Tabs/Chars" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="Spaces/Chars" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+                                        <TextBlock Text="EL/Chars" FontFamily="Courier New" FontSize="13" Margin="5,0,0,5" />
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="3">
+                                        <Border Margin="0,3,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="Spaces" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="ElNel" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="words1" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="AvgwordsPerLine" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="charsInWord" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="cmntlocl" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="tabsTochars" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="spacesTochars" Background="#f1eded" />
+                                        </Border>
+                                        <Border Margin="0,0,0,4" Width="50" Height="16" BorderBrush="Gray" BorderThickness="1">
+                                            <TextBlock Name="ElToChars" Background="#f1eded" />
+                                        </Border>
+
+                                    </StackPanel>
+                                </Grid>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Words">
+                            <Grid Margin="0,0,1,1" Background="White">
+                                <WindowsFormsHost>
+                                    <scintilla:Scintilla x:Name="scint1" />
+                                </WindowsFormsHost>
+                            </Grid>
+
+                        </TabItem>
+                        <TabItem Header="Data Grid">
+                            <Grid Name="dataGridGrid">
+
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </GroupBox>
+            </Grid>
+            <Grid Grid.Row="1" Margin="0,0,1,1" Background="White">
+                <GroupBox Header="File" BorderThickness="2">
+                    <WindowsFormsHost>
+                        <scintilla:Scintilla x:Name="scint" />
+                    </WindowsFormsHost>
+                </GroupBox>
+            </Grid>
+            
+        </Grid>
+    </DockPanel>
+
+</Window>
