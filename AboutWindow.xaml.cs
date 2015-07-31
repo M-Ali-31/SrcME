@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace GUI_Experiment
+namespace SrcME
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
@@ -28,7 +28,7 @@ namespace GUI_Experiment
         {
             BitmapImage b = new BitmapImage();
             b.BeginInit();
-            b.UriSource = new Uri(@"/GUI_Experiment;component/Images/img.bmp", UriKind.Relative);
+            b.UriSource = new Uri(@"/SrcME;component/Images/img.bmp", UriKind.Relative);
             b.EndInit();
 
             // ... Get Image reference from sender.
@@ -39,7 +39,7 @@ namespace GUI_Experiment
         private void details()
         {
             product.Content = "SrcME (Source code Metrics Extraction)";
-            version.Content = "0.9.0 Beta";
+            version.Content = "0.9.1 Beta";
             license.Content = "The GNU General Public License v3.0 ";
             copyright.Content = "© 2015 by M. Ali & M. Shoaib";
             

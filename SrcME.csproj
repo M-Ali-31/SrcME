@@ -8,8 +8,8 @@
     <ProjectGuid>{0EDF0BCA-6ED9-4C7A-A5A1-29CB7FD61D4A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GUI_Experiment</RootNamespace>
-    <AssemblyName>GUI_Experiment</AssemblyName>
+    <RootNamespace>SrcME</RootNamespace>
+    <AssemblyName>SrcME</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

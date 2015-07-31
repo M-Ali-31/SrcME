@@ -7,7 +7,7 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SrcME 0.9.0 (Source code Metrics Extraction)")]
+[assembly: AssemblyTitle("SrcME")]
 [assembly: AssemblyDescription("Source code Metrics Extraction")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("M. Ali    M. Shoaib")]

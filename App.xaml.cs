@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace GUI_Experiment
+namespace SrcME
 {
     /// <summary>
     /// Interaction logic for App.xaml

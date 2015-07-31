@@ -27,7 +27,7 @@ using System.Text;
 using ScintillaNET;
 using Microsoft.Win32;
 
-namespace GUI_Experiment
+namespace SrcME
 {
     class Metrics
     {

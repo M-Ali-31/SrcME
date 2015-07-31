@@ -31,7 +31,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using ScintillaNET;
 
-namespace GUI_Experiment
+namespace SrcME
 {
     public static class CustomCommands
     {
@@ -85,6 +85,26 @@ namespace GUI_Experiment
                         new InputGestureCollection()
                                 {
                                         new KeyGesture(Key.F4, ModifierKeys.Alt)
+                                }
+                );
+        public static readonly RoutedUICommand Statistics = new RoutedUICommand
+                (
+                        "Statistics",
+                        "Statistics",
+                        typeof(CustomCommands),
+                        new InputGestureCollection()
+                                {
+                                        new KeyGesture(Key.V, ModifierKeys.Control)
+                                }
+                );
+        public static readonly RoutedUICommand RunWeka = new RoutedUICommand
+                (
+                        "Run Weka",
+                        "Run Weka",
+                        typeof(CustomCommands),
+                        new InputGestureCollection()
+                                {
+                                        new KeyGesture(Key.W, ModifierKeys.Control)
                                 }
                 );
         //Define more commands here, just like the one above

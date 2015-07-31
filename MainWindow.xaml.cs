@@ -31,7 +31,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using ScintillaNET;
 
-namespace GUI_Experiment
+namespace SrcME
 {
    
     /// <summary>
@@ -139,6 +139,19 @@ namespace GUI_Experiment
 
             }
         }
+        private void Statistics_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window1 = new Window();
+            window1.Title = "Statistics";
+            System.Windows.Controls.DataGrid mydataGrid = new System.Windows.Controls.DataGrid();
+            mydataGrid.AutoGenerateColumns = true;
+            mydataGrid.CanUserAddRows = false;
+            mydataGrid.ItemsSource = outputList;
+            Grid DynamicGrid = new Grid();
+            DynamicGrid.Children.Add(mydataGrid);
+            window1.Content = DynamicGrid;
+            window1.Show();
+        }
         private void ExitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             App.Current.Shutdown();
@@ -198,8 +211,8 @@ namespace GUI_Experiment
                 metrics.MyData.NameOfFile = visit;
                 metrics.readSingleFile();
                 metrics.doCalculationsAndDisplay(visit);
+                DisplayFile();
                 displayStats();
-
             }
         }
 
@@ -242,7 +255,7 @@ namespace GUI_Experiment
             words1.Text = metrics.MyData.FileStatistics[16];
             AvgwordsPerLine.Text = metrics.MyData.FileStatistics[17];
             charsInWord.Text = metrics.MyData.FileStatistics[18];
-           
+
         }
 
         #endregion
@@ -330,13 +343,34 @@ namespace GUI_Experiment
 
         void worker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            System.Windows.MessageBox.Show("Stats Writing Completed !");
+            folderLines.Text = metrics.MyData.NumOfLinesOfAllFiles.ToString();
+            //System.Windows.MessageBox.Show("Stats Writing Completed !");
+            MessageBoxResult msgbox = System.Windows.MessageBox.Show("Do you want to see statistics ?", "Metrics calculations completed",
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, System.Windows.MessageBoxOptions.None);
+
+            if (msgbox == MessageBoxResult.Yes)
+            {
+                var window1 = new Window();
+                window1.Title = "Statistics";
+                System.Windows.Controls.DataGrid mydataGrid = new System.Windows.Controls.DataGrid();
+                mydataGrid.AutoGenerateColumns = true;
+                mydataGrid.CanUserAddRows = false;
+                mydataGrid.ItemsSource = outputList;
+                Grid DynamicGrid = new Grid();
+                DynamicGrid.Children.Add(mydataGrid);
+                window1.Content = DynamicGrid;
+                window1.ShowDialog();
+                mainProgressBar.Value = 0;
+
+            }
+
+            mainProgressBar.Value = 0;
             System.Windows.Controls.DataGrid mydataGrid1 = new System.Windows.Controls.DataGrid();
             mydataGrid1.AutoGenerateColumns = true;
             mydataGrid1.CanUserAddRows = false;
             mydataGrid1.ItemsSource = outputList;
             dataGridGrid.Children.Add(mydataGrid1);
-            mainProgressBar.Value = 0;
+            
         }
 
 
@@ -384,25 +418,12 @@ namespace GUI_Experiment
             AvgwordsPerLine.Text = metrics.MyData.FileStatistics[17];
             charsInWord.Text = metrics.MyData.FileStatistics[18];
 
-            scint.ResetText();
-            scint.Text = metrics.MyData.FileText;
-            scint.ConfigurationManager.Language = "cpp";
-            scint.ConfigurationManager.Configure();
-            scint.Margins[0].Width = 50;
-            
+           
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var window1 = new Window();
 
-            System.Windows.Controls.DataGrid mydataGrid = new System.Windows.Controls.DataGrid();
-            mydataGrid.AutoGenerateColumns = true;
-            mydataGrid.CanUserAddRows = false;
-            mydataGrid.ItemsSource = outputList;
-            Grid DynamicGrid = new Grid();
-            DynamicGrid.Children.Add(mydataGrid);
-            window1.Content = DynamicGrid;
-            window1.Show();
+        private void RunWeka_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Weka integration with SrcME is currently under development.", "Sorry, this feature is not available yet!");
         }
 
     }
